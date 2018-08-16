@@ -33,6 +33,9 @@ function dateString(event) {
       }
     } else {
       // 開始中・終了
+      if (start.getDate() < now.getDate()) {
+        return "昨日";
+      }
       var diff = (now.getHours() - start.getHours());
       if (diff > 0) {
         return diff + '時間前';
