@@ -6,18 +6,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title><?= title ?></title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-    <style>
-    <!-- CSS -->
+    <style type="text/css">
+    <!--
+      .container {
+        width: 100vw;
+      }
+      p.card-body > a {
+        color: #81d4fa;
+      }
+      div > div > p > a.timelink {
+        color: #212529;
+        text-decoration: none;
+      }
+      div.text-light > div > p > a.timelink {
+        color: #f8f9fa;
+        text-decoration: none;
+      }
+     -->
     </style>
   </head>
   <body class="bg-ligth">
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
       <a class="navbar-brand mr-auto mr-lg-0" href="/"><?= title ?></a>
     </nav>
-
+    
     <main role="main" class="container">
       <!-- TODO -->
-      <h3 class="mt-5">ToDo</h3>
+      <h3 class="mt-4">ToDo</h3>
       <div id="todo-list">
         <?
           var todo = getTodo();
@@ -33,10 +48,41 @@
             }
             output.append('-success float-right" id="' + todo[i].id + '" todo>Done</button>');
             output.append('<h5 class="card-title float-none">' + todo[i].title + '</h5>');
-            output.append('<p class="card-subtitle pb-3 float-none">' + todo[i].time + '</p>');
+            if (!todo[i].description) {
+              output.append('<p class="card-subtitle pb-3 float-none"><a class="timelink" target="_blank" rel="nofollow" href="' + todo[i].html_link + '">' + todo[i].time + '</a></p>');
+            } else {
+              output.append('<p class="card-subtitle float-none"><a class="timelink" target="_blank" rel="nofollow" href="' + todo[i].html_link + '">' + todo[i].time + '</a></p>');
+              output.append('<p class="card-body pt-1 pl-0 pb-0 float-none">' + todo[i].description + '</p>');
+            }
             output.append('</div></div>');
           }
         ?>
+      </div>
+      <h3 class="mt-4">未達成タスク</h3>
+      <div id="remaining-todo-list">
+       <?
+         var remainings = getRemainings();
+         for (var i = 0; i < remainings.length; i++) {
+            output.append('<div class="card m-1');
+            if (remainings[i].is_info) {
+              output.append(' bg-warning');
+            }
+            output.append('"><div class="card-body pt-3 pb-0 mb-0">');
+            output.append('<button type="button" class="btn btn');
+            if (!remainings[i].is_info) {
+              output.append('-outline');
+            }
+            output.append('-success float-right" id="' + remainings[i].id + '" todo>Done</button>');
+            output.append('<h5 class="card-title float-none">' + remainings[i].title + '</h5>');
+            if (!remainings[i].description) {
+              output.append('<p class="card-subtitle pb-3 float-none"><a class="timelink" target="_blank" rel="nofollow" href="' + remainings[i].html_link + '">' + remainings[i].time + '</a></p>');
+            } else {
+              output.append('<p class="card-subtitle float-none"><a class="timelink" target="_blank" rel="nofollow" href="' + remainings[i].html_link + '">' + remainings[i].time + '</a></p>');
+              output.append('<p class="card-body pt-1 pl-0 pb-0 float-none">' + remainings[i].description + '</p>');
+            }
+            output.append('</div></div>');
+          }
+       ?>
       </div>
     </main>
 
@@ -53,7 +99,7 @@
             .done(id);
         }
       });
-
+      
       function finish(id) {
         var button = document.getElementById(id);
         button.parentElement.style.display = 'none';
